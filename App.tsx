@@ -1,118 +1,71 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import ClockScreen from './screens/ClockScreen';
+import TimerScreen from './screens/TimerScreen';
+import StopwatchScreen from './screens/StopwatchScreen';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const screenOptions = {
+  headerTitleAlign: 'center', // Aligns the header title to the center
+  headerStyle: {
+    backgroundColor: 'lightgray', // Optional: Set a background color for the header
+  },
+  headerTitleStyle: {
+    fontWeight: 'bold',
+    fontSize: 20, // Adjust font size if needed
+  },
+};
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const ClockStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Clock" component={ClockScreen} options={screenOptions} />
+  </Stack.Navigator>
+);
+
+const TimerStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Timer" component={TimerScreen} options={screenOptions} />
+  </Stack.Navigator>
+);
+
+const StopwatchStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Stopwatch" component={StopwatchScreen} options={screenOptions} />
+  </Stack.Navigator>
+);
+
+export default function App() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
+            if (route.name === 'Clock') {
+              iconName = 'time-outline';
+            } else if (route.name === 'Timer') {
+              iconName = 'timer-outline';
+            } else if (route.name === 'Stopwatch') {
+              iconName = 'stopwatch-outline';
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
           },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+        })}
+        tabBarOptions={{
+          activeTintColor: 'blue',
+          inactiveTintColor: 'gray',
+        }}
+      >
+        <Tab.Screen name="Clock" component={ClockStack} options={{ headerShown: false }} />
+        <Tab.Screen name="Timer" component={TimerStack} options={{ headerShown: false }} />
+        <Tab.Screen name="Stopwatch" component={StopwatchStack} options={{ headerShown: false }} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
